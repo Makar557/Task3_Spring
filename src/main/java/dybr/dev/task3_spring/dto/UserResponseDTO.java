@@ -19,5 +19,5 @@ public class UserResponseDTO {
 
     private String email;
 
-    private int age;
+    private Integer age;
 }

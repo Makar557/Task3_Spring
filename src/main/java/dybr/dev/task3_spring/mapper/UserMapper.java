@@ -14,7 +14,7 @@ public class UserMapper {
 
     }
 
-    public UserResponseDTO toDtoResponse(UserEntity entity) {
+    public UserResponseDTO toResponseDto(UserEntity entity) {
 
         return new UserResponseDTO(entity.getId(), entity.getName(), entity.getEmail(), entity.getAge());
 

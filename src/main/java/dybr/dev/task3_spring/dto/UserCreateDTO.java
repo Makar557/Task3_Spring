@@ -26,6 +26,6 @@ public class UserCreateDTO {
 
     @Min(1)
     @Max(110)
-    private int age;
+    private Integer age;
 
 }
