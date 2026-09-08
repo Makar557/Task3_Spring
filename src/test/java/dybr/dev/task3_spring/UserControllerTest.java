@@ -1,6 +1,5 @@
 package dybr.dev.task3_spring;
 
-import com.jayway.jsonpath.ReadContext;
 import dybr.dev.task3_spring.controller.UserController;
 import dybr.dev.task3_spring.dto.UserCreateDTO;
 import dybr.dev.task3_spring.dto.UserResponseDTO;
@@ -14,11 +13,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.http.MediaType;
 import tools.jackson.databind.ObjectMapper;
 
-import static org.mockito.ArgumentMatchers.any;
-
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
