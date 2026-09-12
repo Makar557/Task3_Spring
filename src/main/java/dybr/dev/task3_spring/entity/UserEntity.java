@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -33,15 +33,15 @@ public class UserEntity {
 
     @Setter
     @Column(name = "age")
-    private int age;
+    private Integer age;
 
     @Column(name = "created_at")
-    private LocalDate created_at;
+    private LocalDateTime createdAt;
 
-    public UserEntity(String name, String email, int age) {
+    public UserEntity(String name, String email, Integer age) {
         this.name = name;
         this.email = email;
-        created_at = LocalDate.now();
+        createdAt = LocalDateTime.now();
         this.age = age;
     }
 

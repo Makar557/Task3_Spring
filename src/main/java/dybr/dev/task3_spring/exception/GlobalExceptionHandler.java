@@ -17,9 +17,9 @@ public class GlobalExceptionHandler {
     private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponseDto> handleEntityException(Exception e) {
+    public ResponseEntity<ErrorResponseDTO> handleException(Exception e) {
 
-        var errorDto = new ErrorResponseDto("Произошла ошибка", e.getMessage(), LocalDateTime.now());
+        var errorDto = new ErrorResponseDTO("Произошла ошибка", e.getMessage(), LocalDateTime.now());
 
         logger.error("{} {} в {}", errorDto.errorTime(), errorDto.message(), errorDto.detailedMessage());
 
@@ -27,9 +27,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorResponseDto> handleEntityNotFound(EntityNotFoundException e) {
+    public ResponseEntity<ErrorResponseDTO> handleEntityNotFound(EntityNotFoundException e) {
 
-        var errorDto = new ErrorResponseDto("Пользователь не найден", e.getMessage(), LocalDateTime.now());
+        var errorDto = new ErrorResponseDTO("Пользователь не найден", e.getMessage(), LocalDateTime.now());
 
         logger.warn("{} {} в {}", errorDto.errorTime(), errorDto.message(), errorDto.detailedMessage());
 
@@ -37,9 +37,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(exception = {IllegalArgumentException.class, MethodArgumentNotValidException.class, IllegalStateException.class})
-    public ResponseEntity<ErrorResponseDto> handleBadRequest(Exception e) {
+    public ResponseEntity<ErrorResponseDTO> handleBadRequest(Exception e) {
 
-        var errorDto = new ErrorResponseDto("Неправильный запрос", e.getMessage(), LocalDateTime.now());
+        var errorDto = new ErrorResponseDTO("Неправильный запрос", e.getMessage(), LocalDateTime.now());
 
         logger.warn("{} {} в {}", errorDto.errorTime(), errorDto.message(), errorDto.detailedMessage());
 

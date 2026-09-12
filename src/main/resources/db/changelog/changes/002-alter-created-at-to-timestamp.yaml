@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-alter-created-at-to-timestamp
+      author: makar557
+      changes:
+        - modifyDataType:
+            tableName: users
+            columnName: created_at
+            newDataType: timestamp

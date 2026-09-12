@@ -1,4 +1,8 @@
 databaseChangeLog:
   - include:
-      file: Changes/001-create-users.yaml
+      file: changes/001-create-users.yaml
+      relativeToChangelogFile: true
+
+  - include:
+      file: changes/002-alter-created-at-to-timestamp.yaml
       relativeToChangelogFile: true

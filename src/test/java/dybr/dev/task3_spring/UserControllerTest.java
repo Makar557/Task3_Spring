@@ -1,6 +1,5 @@
 package dybr.dev.task3_spring;
 
-import com.jayway.jsonpath.ReadContext;
 import dybr.dev.task3_spring.controller.UserController;
 import dybr.dev.task3_spring.dto.UserCreateDTO;
 import dybr.dev.task3_spring.dto.UserResponseDTO;
@@ -14,11 +13,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.http.MediaType;
 import tools.jackson.databind.ObjectMapper;
 
-import static org.mockito.ArgumentMatchers.any;
-
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -50,7 +46,7 @@ class UserControllerTest {
                 .thenReturn(user);
 
         mockMvc.perform(
-                get("/user/1")
+                get("/api/users/1")
         )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
@@ -83,7 +79,7 @@ class UserControllerTest {
                 .thenReturn(users);
 
         mockMvc.perform(
-                get("/user/")
+                get("/api/users")
         )
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(users)));
@@ -114,7 +110,7 @@ class UserControllerTest {
 
 
         mockMvc.perform(
-                post("/user/")
+                post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonUser)
         )
@@ -138,7 +134,7 @@ class UserControllerTest {
                 .thenReturn(userResponse);
 
         mockMvc.perform(
-                        delete("/user/1")
+                        delete("/api/users/1")
                 )
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(userResponse)));
@@ -168,7 +164,7 @@ class UserControllerTest {
         String jsonUser = objectMapper.writeValueAsString(user);
 
         mockMvc.perform(
-                put("/user/1")
+                put("/api/users/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonUser)
         )
@@ -185,7 +181,7 @@ class UserControllerTest {
                 .thenThrow(new EntityNotFoundException("Пользователь не найден"));
 
         mockMvc.perform(
-                        get("/user/1")
+                        get("/api/users/1")
                 )
                 .andExpect(status().isNotFound())
 
@@ -200,7 +196,7 @@ class UserControllerTest {
                 .thenThrow(new IllegalArgumentException("Некорректный аргумент"));
 
         mockMvc.perform(
-                        get("/user/1")
+                        get("/api/users/1")
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Неправильный запрос"))
@@ -214,7 +210,7 @@ class UserControllerTest {
                 .thenThrow(new IllegalStateException("Некорректное состояние"));
 
         mockMvc.perform(
-                        get("/user/1")
+                        get("/api/users/1")
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Неправильный запрос"))
@@ -233,7 +229,7 @@ class UserControllerTest {
             """;
 
         mockMvc.perform(
-                        post("/user/")
+                        post("/api/users")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(invalidJson)
                 )
@@ -248,7 +244,7 @@ class UserControllerTest {
                 .thenThrow(new RuntimeException("Ошибка сервера"));
 
         mockMvc.perform(
-                        get("/user/1")
+                        get("/api/users/1")
                 )
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.message").value("Произошла ошибка"))
