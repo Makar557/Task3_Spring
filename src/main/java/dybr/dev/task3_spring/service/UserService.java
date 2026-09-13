@@ -30,16 +30,14 @@ public class UserService {
 
         UserEntity saveUserEntity = userRepository.save(userEntity);
 
-        producer.sendMessage(
-                new UserNotification(saveUserEntity.getId(), saveUserEntity.getEmail(), UserOperation.USER_CREATION)
-        );
+        producer.sendMessage(new UserNotification(saveUserEntity.getId(), saveUserEntity.getEmail(), UserOperation.USER_CREATION));
 
         return userMapper.toResponseDto(saveUserEntity);
     }
 
     public UserResponseDTO findById(Long id) {
 
-        UserEntity findUser = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Пользователь не найден"));
+        UserEntity findUser = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Поиск не удался, такого пользователя нет"));
 
         return userMapper.toResponseDto(findUser);
     }
@@ -54,13 +52,11 @@ public class UserService {
     @Transactional
     public UserResponseDTO deleteById(Long id) {
 
-        UserEntity findUser = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Пользователь не найден"));
+        UserEntity findUser = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Не удалось удалить пользователя, так как такого пользователя нет"));
 
         userRepository.delete(findUser);
 
-        producer.sendMessage(
-                new UserNotification(findUser.getId(), findUser.getEmail(), UserOperation.USER_DELETION)
-        );
+        producer.sendMessage(new UserNotification(findUser.getId(), findUser.getEmail(), UserOperation.USER_DELETION));
 
         return userMapper.toResponseDto(findUser);
     }
@@ -68,11 +64,11 @@ public class UserService {
     @Transactional
     public UserResponseDTO update(UserCreateDTO user, Long id) {
 
-        UserEntity findUser = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Пользователь не найден"));
+        UserEntity findUser = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Не удалось изменить пользователя, так как такого пользователя нет"));
 
-        findUser.setAge(user.getAge());
-        findUser.setName(user.getName());
-        findUser.setEmail(user.getEmail());
+        findUser.setAge(user.age());
+        findUser.setName(user.name());
+        findUser.setEmail(user.email());
 
         userRepository.save(findUser);
 

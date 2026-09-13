@@ -10,7 +10,7 @@ public class UserMapper {
 
     public UserEntity toEntity(UserCreateDTO dto) {
 
-        return new UserEntity(dto.getName(), dto.getEmail(), dto.getAge());
+        return new UserEntity(dto.name(), dto.email(), dto.age());
 
     }
 
