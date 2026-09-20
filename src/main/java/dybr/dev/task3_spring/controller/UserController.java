@@ -73,7 +73,6 @@ public class UserController {
         UserResponseDTO user = userService.findById(id);
 
         EntityModel<UserResponseDTO> model = UserOperation.FIND_BY_ID.generate(user);
-
         return ResponseEntity.ok(model);
     }
 
@@ -107,7 +106,6 @@ public class UserController {
         UserResponseDTO user = userService.deleteById(id);
 
         EntityModel<UserResponseDTO> model = UserOperation.DELETE.generate(user);
-
 
         return ResponseEntity.ok(model);
     }

@@ -13,17 +13,17 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @ApiResponse(responseCode = "200", description = "Пользователь успешно удалён, данные пользователя возвращены", content = @Content(mediaType = "application/prs.hal-forms+json", schema = @Schema(implementation = UserResponseDTO.class, example = """
-{
-  "_links": {
-    "users": {
-      "href": "http://localhost:8080/api/users"
-    }
-  },
-  "id": 13,
-  "name": "Makar",
-  "email": "makar@gmail.com",
-  "age": 31
-}
-            """)))
+        {
+          "_links": {
+            "users": {
+              "href": "http://localhost:8080/api/users"
+            }
+          },
+          "id": 13,
+          "name": "Makar",
+          "email": "makar@gmail.com",
+          "age": 31
+        }
+        """)))
 public @interface UserDeletedResponse {
 }

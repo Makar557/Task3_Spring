@@ -31,39 +31,7 @@ import java.lang.annotation.Target;
           "id": 13,
           "name": "Makar",
           "email": "makar@gmail.com",
-          "age": 31,
-          "_templates": {
-            "deleteById": {
-              "method": "DELETE",
-              "properties": []
-            },
-            "update": {
-              "method": "PUT",
-              "properties": [
-                {
-                  "max": 110,
-                  "min": 1,
-                  "name": "age",
-                  "readOnly": true,
-                  "type": "number"
-                },
-                {
-                  "name": "email",
-                  "readOnly": true,
-                  "regex": "^(?=\\\\s*\\\\S).*$",
-                  "required": true,
-                  "type": "email"
-                },
-                {
-                  "name": "name",
-                  "readOnly": true,
-                  "regex": "^(?=\\\\s*\\\\S).*$",
-                  "required": true,
-                  "type": "text"
-                }
-              ]
-            }
-          }
+          "age": 31
         }
         """)))
 public @interface UserFoundResponse {
