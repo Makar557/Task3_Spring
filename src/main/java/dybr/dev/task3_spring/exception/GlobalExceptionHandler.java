@@ -5,11 +5,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -19,9 +22,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handleException(Exception e) {
 
-        var errorDto = new ErrorResponseDTO("Произошла ошибка", e.getMessage(), LocalDateTime.now());
+        var errorDto = new ErrorResponseDTO("Внутренняя ошибка сервера", null, LocalDateTime.now());
 
-        logger.error("{} {} в {}", errorDto.errorTime(), errorDto.message(), errorDto.detailedMessage());
+        logger.error("Непредвиденная ошибка: {}", e.getMessage(), e);
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDto);
     }
@@ -29,20 +32,47 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleEntityNotFound(EntityNotFoundException e) {
 
-        var errorDto = new ErrorResponseDTO("Пользователь не найден", e.getMessage(), LocalDateTime.now());
+        var errorDto = new ErrorResponseDTO("Пользователь не найден", null, LocalDateTime.now());
 
-        logger.warn("{} {} в {}", errorDto.errorTime(), errorDto.message(), errorDto.detailedMessage());
+        logger.warn("Пользователь не найден: {}", e.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDto);
     }
 
-    @ExceptionHandler(exception = {IllegalArgumentException.class, MethodArgumentNotValidException.class, IllegalStateException.class})
-    public ResponseEntity<ErrorResponseDTO> handleBadRequest(Exception e) {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponseDTO> handleBadRequest(MethodArgumentNotValidException e) {
 
-        var errorDto = new ErrorResponseDTO("Неправильный запрос", e.getMessage(), LocalDateTime.now());
+        String errors = e.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .collect(Collectors.joining("; "));
 
-        logger.warn("{} {} в {}", errorDto.errorTime(), errorDto.message(), errorDto.detailedMessage());
+        var errorDto = new ErrorResponseDTO("Некорректный запрос", errors, LocalDateTime.now());
+
+        logger.warn("Ошибка валидации запроса: {}", e.getMessage());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDto);
     }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponseDTO> handleTypeMismatch(MethodArgumentTypeMismatchException e) {
+
+        var errorDto = new ErrorResponseDTO("Некорректный аргумент", "Параметр ID должен иметь тип Long", LocalDateTime.now());
+
+        logger.warn("Некорректный тип аргумента: {}", e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDto);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponseDTO> handleMessageNotReadable(HttpMessageNotReadableException e) {
+
+        var errorDto = new ErrorResponseDTO("Некорректный JSON","Некорректный формат JSON", LocalDateTime.now());
+
+        logger.warn("Некорректный формат JSON: {}", e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDto);
+    }
+
 }
