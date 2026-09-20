@@ -1,4 +1,4 @@
-package dybr.dev.task3_spring.controller;
+package dybr.dev.task3_spring.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.hateoas.config.EnableHypermediaSupport;

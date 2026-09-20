@@ -28,13 +28,7 @@ import java.lang.annotation.Target;
            "id": 13,
            "name": "Makar",
            "email": "makar@gmail.com",
-           "age": 31,
-           "_templates": {
-             "deleteById": {
-               "method": "DELETE",
-               "properties": []
-             }
-           }
+           "age": 31
          }
         """)))
 public @interface UserUpdatedResponse {
