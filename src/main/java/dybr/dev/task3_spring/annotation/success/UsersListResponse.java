@@ -20,55 +20,6 @@ import java.lang.annotation.Target;
               {
                 "_links": {
                   "self": {
-                    "href": "http://localhost:8080/api/users/6"
-                  },
-                  "update": {
-                    "href": "http://localhost:8080/api/users/6"
-                  },
-                  "delete": {
-                    "href": "http://localhost:8080/api/users/6"
-                  }
-                },
-                "id": 6,
-                "name": "Ivan",
-                "email": "makardy@gmail.com",
-                "age": 18,
-                "_templates": {
-                  "deleteById": {
-                    "method": "DELETE",
-                    "properties": []
-                  },
-                  "update": {
-                    "method": "PUT",
-                    "properties": [
-                      {
-                        "max": 110,
-                        "min": 1,
-                        "name": "age",
-                        "readOnly": true,
-                        "type": "number"
-                      },
-                      {
-                        "name": "email",
-                        "readOnly": true,
-                        "regex": "^(?=\\\\s*\\\\S).*$",
-                        "required": true,
-                        "type": "email"
-                      },
-                      {
-                        "name": "name",
-                        "readOnly": true,
-                        "regex": "^(?=\\\\s*\\\\S).*$",
-                        "required": true,
-                        "type": "text"
-                      }
-                    ]
-                  }
-                }
-              },
-              {
-                "_links": {
-                  "self": {
                     "href": "http://localhost:8080/api/users/41"
                   },
                   "update": {
@@ -81,39 +32,7 @@ import java.lang.annotation.Target;
                 "id": 41,
                 "name": "Makar",
                 "email": "makar@gmail.com",
-                "age": 31,
-                "_templates": {
-                  "deleteById": {
-                    "method": "DELETE",
-                    "properties": []
-                  },
-                  "update": {
-                    "method": "PUT",
-                    "properties": [
-                      {
-                        "max": 110,
-                        "min": 1,
-                        "name": "age",
-                        "readOnly": true,
-                        "type": "number"
-                      },
-                      {
-                        "name": "email",
-                        "readOnly": true,
-                        "regex": "^(?=\\\\s*\\\\S).*$",
-                        "required": true,
-                        "type": "email"
-                      },
-                      {
-                        "name": "name",
-                        "readOnly": true,
-                        "regex": "^(?=\\\\s*\\\\S).*$",
-                        "required": true,
-                        "type": "text"
-                      }
-                    ]
-                  }
-                }
+                "age": 31
               }
             ]
           },
