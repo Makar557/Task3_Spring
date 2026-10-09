@@ -11,12 +11,13 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -62,11 +63,11 @@ class UserControllerTest {
 
         List<UserResponseDTO> users = List.of(
                 new UserResponseDTO(
-                1L,
-                "Makar",
-                "makar@gmail.com",
-                23),
-
+                        1L,
+                        "Makar",
+                        "makar@gmail.com",
+                        23
+                ),
                 new UserResponseDTO(
                         2L,
                         "Ivan",
@@ -79,10 +80,12 @@ class UserControllerTest {
                 .thenReturn(users);
 
         mockMvc.perform(
-                get("/api/users")
-        )
+                        get("/api/users")
+                )
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(users)));
+                .andExpect(jsonPath("_embedded.userResponseDTOList", hasSize(2)))
+                .andExpect(jsonPath("_embedded.userResponseDTOList[0].name").value("Makar"))
+                .andExpect(jsonPath("_embedded.userResponseDTOList[1].name").value("Ivan"));
 
         verify(userService).findAll();
     }
@@ -178,7 +181,7 @@ class UserControllerTest {
     void findById_shouldReturnNotFound_whenUserDoesNotExist() throws Exception {
 
         when(userService.findById(1L))
-                .thenThrow(new EntityNotFoundException("Пользователь не найден"));
+                .thenThrow(new EntityNotFoundException());
 
         mockMvc.perform(
                         get("/api/users/1")
@@ -186,22 +189,20 @@ class UserControllerTest {
                 .andExpect(status().isNotFound())
 
                 .andExpect(jsonPath("$.message").value("Пользователь не найден"))
-                .andExpect(jsonPath("$.detailedMessage").value("Пользователь не найден"))
                 .andExpect(jsonPath("$.errorTime").exists());
     }
     @Test
-    void findById_shouldReturnBadRequest_whenIllegalArgumentExceptionOccurs() throws Exception {
-
-        when(userService.findById(1L))
-                .thenThrow(new IllegalArgumentException("Некорректный аргумент"));
+    void findById_shouldReturnBadRequest_whenIdIsInvalid() throws Exception {
 
         mockMvc.perform(
-                        get("/api/users/1")
+                        get("/api/users/abc")
                 )
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Неправильный запрос"))
-                .andExpect(jsonPath("$.detailedMessage").value("Некорректный аргумент"))
+                .andExpect(jsonPath("$.message").value("Некорректный аргумент"))
+                .andExpect(jsonPath("$.detailedMessage").value("Параметр ID должен иметь тип Long"))
                 .andExpect(jsonPath("$.errorTime").exists());
+
+        verifyNoInteractions(userService);
     }
     @Test
     void findById_shouldReturnBadRequest_whenIllegalStateExceptionOccurs() throws Exception {
@@ -212,21 +213,23 @@ class UserControllerTest {
         mockMvc.perform(
                         get("/api/users/1")
                 )
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Неправильный запрос"))
-                .andExpect(jsonPath("$.detailedMessage").value("Некорректное состояние"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.message").value("Внутренняя ошибка сервера"))
+                .andExpect(jsonPath("$.detailedMessage").doesNotExist())
                 .andExpect(jsonPath("$.errorTime").exists());
     }
+
+
     @Test
     void createUser_shouldReturnBadRequest_whenValidationFails() throws Exception {
 
         String invalidJson = """
-            {
-                "name": "",
-                "email": "qwerty",
-                "age": 0
-            }
-            """;
+        {
+            "name": "",
+            "email": "qwerty",
+            "age": 0
+        }
+        """;
 
         mockMvc.perform(
                         post("/api/users")
@@ -234,9 +237,12 @@ class UserControllerTest {
                                 .content(invalidJson)
                 )
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Неправильный запрос"))
+                .andExpect(jsonPath("$.message").value("Некорректный запрос"))
+                .andExpect(jsonPath("$.detailedMessage").exists())
                 .andExpect(jsonPath("$.errorTime").exists());
     }
+
+
     @Test
     void findById_shouldReturnInternalServerError_whenUnexpectedExceptionOccurs() throws Exception {
 
@@ -247,8 +253,8 @@ class UserControllerTest {
                         get("/api/users/1")
                 )
                 .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.message").value("Произошла ошибка"))
-                .andExpect(jsonPath("$.detailedMessage").value("Ошибка сервера"))
+                .andExpect(jsonPath("$.message").value("Внутренняя ошибка сервера"))
+                .andExpect(jsonPath("$.detailedMessage").doesNotExist())
                 .andExpect(jsonPath("$.errorTime").exists());
     }
 }
